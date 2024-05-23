@@ -20,8 +20,9 @@ public class DbInitializer
 
         if (ctx.Auctions.Any())
         {
-            Console.WriteLine("Already seeded, nothing to do.");
-            return;
+            // Console.WriteLine("Already seeded, nothing to do.");
+            // return;
+            ctx.Auctions.ExecuteDelete();
         }
 
         var auctions = new List<Auction>()
