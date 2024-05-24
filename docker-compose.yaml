@@ -12,6 +12,17 @@ services:
       - "5432:5432"
     volumes:
       - cars-data:/var/lib/postgresql/data
-
+        
+  mongo:
+    image: mongo:7-jammy
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - "27017:27017"
+    volumes:
+      - cars-mongo-data:/var/lib/mongodb/data
+  
 volumes:
     cars-data:
+    cars-mongo-data:
