@@ -21,12 +21,21 @@ builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetP
 
 builder.Services.AddMassTransit(opt =>
 {
+    // mass transit registers consumers
+    // for each consumer<t> amqp broker will create a topology
+    // in case of rabbitmq 2 exchanges and 1 queue will be created
+    // in this case:
+    // Contracts:AuctionCreated exchange
+    // search-auction-created exchange
+    // and search-auction-created queue
     opt.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
     
     opt.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
     
+    // here we point to specific amqp implementation
     opt.UsingRabbitMq((ctx, cfg) =>
     {
+        // mass transit creates consumer endpoints and registers topology with rabbitmq
         cfg.ConfigureEndpoints(ctx);
     });
 });
