@@ -17,6 +17,12 @@ public class AuctionCreatedConsumer(IMapper mapper) : IConsumer<AuctionCreated>
 
         var item = mapper.Map<Item>(context.Message);
         
+        // for demo purposes
+        if (item.Model == "Foo")
+        {
+            throw new ArgumentException("Foo is not allowed");
+        }
+        
         // this will time out and throw an exception if the db is not available
         // but the amqp message will be lost in error queue
         // to handle this, configure retry policy in mass transit elsewhere
