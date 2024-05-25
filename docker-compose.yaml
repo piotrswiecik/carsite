@@ -12,7 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - cars-data:/var/lib/postgresql/data
-        
+  
   mongo:
     image: mongo:7-jammy
     environment:
@@ -23,6 +23,13 @@ services:
     volumes:
       - cars-mongo-data:/var/lib/mongodb/data
   
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 volumes:
-    cars-data:
-    cars-mongo-data:
+  cars-data:
+  cars-mongo-data:
