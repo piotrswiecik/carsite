@@ -16,7 +16,10 @@ public class AuctionCreatedConsumer(IMapper mapper) : IConsumer<AuctionCreated>
         Console.WriteLine("--> Consuming auction created event" + context.Message.Id);
 
         var item = mapper.Map<Item>(context.Message);
-
+        
+        // this will time out and throw an exception if the db is not available
+        // but the amqp message will be lost in error queue
+        // to handle this, configure retry policy in mass transit elsewhere
         await item.SaveAsync();
     }
 }

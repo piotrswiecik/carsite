@@ -36,7 +36,16 @@ builder.Services.AddMassTransit(opt =>
     opt.UsingRabbitMq((ctx, cfg) =>
     {
         // mass transit creates consumer endpoints and registers topology with rabbitmq
-        cfg.ConfigureEndpoints(ctx);
+        // cfg.ConfigureEndpoints(ctx);
+        
+        // refactored into per-endpoint configuration instead
+        cfg.ReceiveEndpoint("search-auction-created", e =>
+        {
+            // when exception is thrown by consumer, normally it causes message to be dropped to error queue
+            // here we state that we want to retry 5 times before dropping
+            e.UseMessageRetry(r => r.Interval(5, 5));
+            e.ConfigureConsumer<AuctionCreatedConsumer>(ctx);
+        });
     });
 });
 
