@@ -1,6 +1,7 @@
 using AuctionService.DTO;
 using AuctionService.Models;
 using AutoMapper;
+using Contracts;
 
 namespace AuctionService.RequestHelpers;
 
@@ -20,5 +21,8 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Item, o => o.MapFrom(s => s));
 
         CreateMap<CreateAuctionDto, Item>();
+
+        // used by mass transit
+        CreateMap<AuctionDto, AuctionCreated>();
     }
 }

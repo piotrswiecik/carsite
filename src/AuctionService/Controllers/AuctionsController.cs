@@ -1,8 +1,11 @@
+using System.Security.Cryptography;
 using AuctionService.Data;
 using AuctionService.DTO;
 using AuctionService.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +13,8 @@ namespace AuctionService.Controllers;
 
 [ApiController]
 [Route("api/auctions")]
-public class AuctionsController(AuctionDbContext ctx, IMapper mapper) : ControllerBase
+public class AuctionsController(
+    AuctionDbContext ctx, IMapper mapper, IPublishEndpoint publishEndpoint) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<AuctionDto>>> GetAllAuctions([FromQuery] string date)
@@ -53,12 +57,18 @@ public class AuctionsController(AuctionDbContext ctx, IMapper mapper) : Controll
         ctx.Auctions.Add(auction);
         var result = await ctx.SaveChangesAsync() > 0;
 
+        // now we have an id after object was stored
+        var newAuction = mapper.Map<AuctionDto>(auction);
+
+        // publish message for all consumers subscribed to this particular type
+        await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
+
         if (!result)
         {
             return BadRequest("Could not save changes.");
         }
 
-        return CreatedAtAction(nameof(GetAuctionById), new { id = auction.Id }, mapper.Map<AuctionDto>(auction));
+        return CreatedAtAction(nameof(GetAuctionById), new { id = auction.Id }, newAuction);
     }
     
     [HttpPut("{id:guid}")]
