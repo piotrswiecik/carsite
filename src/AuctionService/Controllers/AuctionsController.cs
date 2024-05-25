@@ -54,14 +54,17 @@ public class AuctionsController(
         
         // TODO: add current user as seller
         
+        // transaction starts here
         ctx.Auctions.Add(auction);
-        var result = await ctx.SaveChangesAsync() > 0;
-
+        
         // now we have an id after object was stored
         var newAuction = mapper.Map<AuctionDto>(auction);
 
         // publish message for all consumers subscribed to this particular type
         await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
+        
+        // transaction ends here - atomic block
+        var result = await ctx.SaveChangesAsync() > 0;
 
         if (!result)
         {
