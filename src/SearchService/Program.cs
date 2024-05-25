@@ -1,4 +1,5 @@
 using System.Net;
+using MassTransit;
 using Polly;
 using Polly.Extensions.Http;
 using SearchService.Data;
@@ -13,6 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddHttpClient<AuctionServiceHttpClient>().AddPolicyHandler(GetPolicy());
+
+builder.Services.AddMassTransit(opt =>
+{
+    opt.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.ConfigureEndpoints(ctx);
+    });
+});
 
 var app = builder.Build();
 
