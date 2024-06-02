@@ -46,6 +46,12 @@ builder.Services.AddMassTransit(opt =>
             e.UseMessageRetry(r => r.Interval(5, 5));
             e.ConfigureConsumer<AuctionCreatedConsumer>(ctx);
         });
+        
+        cfg.ReceiveEndpoint("search-auction-updated", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(5, 5));
+            e.ConfigureConsumer<AuctionUpdatedConsumer>(ctx);
+        });
     });
 });
 
