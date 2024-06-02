@@ -101,20 +101,17 @@ public class AuctionsController(
         // publish update info to amqp
         // if anyone is interested in this event, they will be notified
         // if not - then nothing happens, even no topology is created
-        var t = mapper.Map <AuctionUpdated>(auction);
-        await publishEndpoint.Publish(t);
+        await publishEndpoint.Publish(mapper.Map <AuctionUpdated>(auction));
 
         // entity is tracked so just save it
         var result = await ctx.SaveChangesAsync() > 0;
 
-        // at this point database trx is already committed
+        // at this point database trx is already committed and message is sent to mq
         if (!result)
         {
             return BadRequest("Could not update.");
         }
 
-        // TODO: inspect when amqp actually fires
-        // because it seems that message is delivered to queue only after entire request completes
         return Ok();
     }
     
@@ -129,6 +126,9 @@ public class AuctionsController(
         }
 
         ctx.Auctions.Remove(auction);
+
+        await publishEndpoint.Publish(new AuctionDeleted { Id = id.ToString() });
+        
         var result = await ctx.SaveChangesAsync() > 0;
 
         if (!result)
