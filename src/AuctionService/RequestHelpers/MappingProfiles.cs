@@ -24,5 +24,7 @@ public class MappingProfiles : Profile
 
         // used by mass transit
         CreateMap<AuctionDto, AuctionCreated>();
+        CreateMap<Auction, AuctionUpdated>().IncludeMembers(x => x.Item);
+        CreateMap<Item, AuctionUpdated>();
     }
 }

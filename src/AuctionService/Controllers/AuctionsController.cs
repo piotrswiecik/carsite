@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuctionService.Controllers;
 
+// Q: how does di container know which kind of publish endpoint to inject?
 [ApiController]
 [Route("api/auctions")]
 public class AuctionsController(
@@ -50,20 +51,24 @@ public class AuctionsController(
     [HttpPost]
     public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto dto)
     {
+        // map auction from request body dto to db entity type
         var auction = mapper.Map<Auction>(dto);
         
-        // TODO: add current user as seller
+        // TODO: add current user as seller to auction entity
         
-        // transaction starts here
+        // transaction starts here when entity is added to db context in memory
+        // because ValueGeneratedOnAdd() is set on Id property, id is generated here instantly
         ctx.Auctions.Add(auction);
         
-        // now we have an id after object was stored
+        // remap auction entity (already with guid assigned by database) to dto format used by amqp exchange
         var newAuction = mapper.Map<AuctionDto>(auction);
 
-        // publish message for all consumers subscribed to this particular type
+        // publish message to rabbitmq exchange
         await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
         
         // transaction ends here - atomic block
+        // if amqp publish failed in previous step, database transaction is rolled back
+        // otherwise auction is saved to db and other services will be eventually consistent
         var result = await ctx.SaveChangesAsync() > 0;
 
         if (!result)
@@ -92,6 +97,11 @@ public class AuctionsController(
         auction.Item.Color = dto.Color ?? auction.Item.Color;
         auction.Item.Mileage = dto.Mileage ?? auction.Item.Mileage;
         auction.Item.Year = dto.Year ?? auction.Item.Year;
+        
+        // publish update info to amqp
+        // if anyone is interested in this event, they will be notified
+        // if not - then nothing happens, even no topology is created
+        await publishEndpoint.Publish(mapper.Map<AuctionUpdated>(auction));
 
         // entity is tracked so just save it
         var result = await ctx.SaveChangesAsync() > 0;
