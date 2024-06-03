@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Contracts;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,13 +49,16 @@ public class AuctionsController(
         return mapper.Map<AuctionDto>(auction);
     }
     
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto dto)
     {
         // map auction from request body dto to db entity type
         var auction = mapper.Map<Auction>(dto);
         
-        // TODO: add current user as seller to auction entity
+        // get auction seller from jwt
+        // User (ClaimsPrincipal) instance is always provided by controller base
+        auction.Seller = User.Identity?.Name ?? "unknown seller";
         
         // transaction starts here when entity is added to db context in memory
         // because ValueGeneratedOnAdd() is set on Id property, id is generated here instantly
@@ -79,6 +83,7 @@ public class AuctionsController(
         return CreatedAtAction(nameof(GetAuctionById), new { id = auction.Id }, newAuction);
     }
     
+    [Authorize]
     [HttpPut("{id:guid}")]
     public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto dto)
     {
@@ -90,7 +95,11 @@ public class AuctionsController(
             return NotFound();
         }
         
-        // TODO: seller name must match username
+        // seller name must match username
+        if (auction.Seller != User.Identity?.Name)
+        {
+            return Forbid(); // 403
+        }
 
         auction.Item.Make = dto.Make ?? auction.Item.Make;
         auction.Item.Model = dto.Model ?? auction.Item.Model;
@@ -115,6 +124,7 @@ public class AuctionsController(
         return Ok();
     }
     
+    [Authorize]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteAuction(Guid id)
     {
@@ -123,6 +133,12 @@ public class AuctionsController(
         if (auction == null)
         {
             return NotFound();
+        }
+        
+        // seller name must match username
+        if (auction.Seller != User.Identity?.Name)
+        {
+            return Forbid(); // 403
         }
 
         ctx.Auctions.Remove(auction);
