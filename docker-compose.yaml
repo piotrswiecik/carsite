@@ -45,6 +45,24 @@ services:
       - postgres
       - rabbitmq
       # - identity-svc
+  
+  search-svc:
+    image: capricornpl/search-svc:latest
+    build:
+      context: .
+      dockerfile: src/SearchService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMq__Host=rabbitmq
+      - ConnectionStrings__MongoDb=mongodb://root:password@mongo:27017
+      - IdentityService__Authority=http://identity-svc
+    ports:
+      - "8001:80"
+    depends_on:
+      - mongo
+      - rabbitmq
+      # - identity-svc
 
 volumes:
   cars-data:

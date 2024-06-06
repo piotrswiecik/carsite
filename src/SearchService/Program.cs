@@ -38,6 +38,12 @@ builder.Services.AddMassTransit(opt =>
         // mass transit creates consumer endpoints and registers topology with rabbitmq
         // cfg.ConfigureEndpoints(ctx);
         
+        cfg.Host(builder.Configuration["RabbitMq:Host"], "/", host =>
+        {
+            host.Username(builder.Configuration.GetValue("RabbitMq:Username", "guest"));
+            host.Password(builder.Configuration.GetValue("RabbitMq:Password", "guest"));
+        });
+        
         // refactored into per-endpoint configuration instead
         cfg.ReceiveEndpoint("search-auction-created", e =>
         {
