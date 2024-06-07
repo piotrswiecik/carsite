@@ -14,7 +14,8 @@ public class AuctionServiceHttpClient(HttpClient client, IConfiguration configur
             .Project(x => x.UpdatedAt.ToString())
             .ExecuteFirstAsync();
 
+        // TODO: create correct settings json for docker setup - this is a workaround
         return await client.GetFromJsonAsync<List<Item>>(
-            configuration["AuctionServiceUrl"] + "/api/auctions?date=" + lastUpdated);
+            "http://auction-svc/api/auctions?date=" + lastUpdated);
     }
 }

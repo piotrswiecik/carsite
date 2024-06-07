@@ -11,6 +11,7 @@ public class DbInitializer
 {
     public static async Task InitDb(WebApplication app)
     {
+        Console.WriteLine("Running InitDb...");
         try
         {
             await DB.InitAsync("SearchDb", MongoClientSettings.FromConnectionString(
@@ -21,19 +22,25 @@ public class DbInitializer
                 .Key(x => x.Model, KeyType.Text)
                 .Key(x => x.Color, KeyType.Text)
                 .CreateAsync();
+            
+            Console.WriteLine("Database structure initialized.");
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
         }
 
-        var count = await DB.CountAsync<Item>();
-
         using var scope = app.Services.CreateScope();
+        
+        Console.WriteLine("Created scope");
 
         var client = scope.ServiceProvider.GetRequiredService<AuctionServiceHttpClient>();
 
+        Console.WriteLine("Created client from scope");
+
         var items = await client.GetItemsForSearchDb();
+        
+        Console.WriteLine("Obtained items from API.");
         
         Console.WriteLine("Items updated sync.");
         Console.WriteLine("Items: " + items.Count);

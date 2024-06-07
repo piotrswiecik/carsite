@@ -96,6 +96,7 @@ app.Lifetime.ApplicationStarted.Register(async () =>
 {
     try
     {
+        Console.WriteLine("Firing ApplicationStarted callback");
         await DbInitializer.InitDb(app);
     }
     catch (Exception ex)

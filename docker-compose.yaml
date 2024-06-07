@@ -44,7 +44,7 @@ services:
     depends_on:
       - postgres
       - rabbitmq
-      # - identity-svc
+      - identity-svc
   
   search-svc:
     image: capricornpl/search-svc:latest
@@ -60,9 +60,10 @@ services:
     ports:
       - "8001:80"
     depends_on:
+      - auction-svc
       - mongo
       - rabbitmq
-      # - identity-svc
+      - identity-svc
   
   identity-svc:
     image: capricornpl/identity-svc:latest
