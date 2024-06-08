@@ -46,22 +46,24 @@ export default function Listings() {
     if (!data) {
         return <h3>Loading...</h3>
     }
-    
-    if (data.totalCount === 0) {
-        return <EmptyFilter showReset />
-    }
-    
+
     return (
         <>
             <Filters />
-            <div className="grid grid-cols-4 gap-6">
-                {data.results.map((auction) => (
-                    <AuctionCard auction={auction} key={auction.id}/>
-                ))}
-            </div>
-            <div className="flex justify-center mt-4">
-                <AppPagination currentPage={params.pageNumber} pageCount={data.pageCount} pageChanged={setPageNumber}/>
-            </div>
+            {data.totalCount === 0 ? (
+                <EmptyFilter showReset />
+            ) : (
+                <>
+                    <div className="grid grid-cols-4 gap-6">
+                        {data.results.map((auction) => (
+                            <AuctionCard auction={auction} key={auction.id}/>
+                        ))}
+                    </div>
+                    <div className="flex justify-center mt-4">
+                        <AppPagination currentPage={params.pageNumber} pageCount={data.pageCount} pageChanged={setPageNumber}/>
+                    </div>
+                </>
+            )}
         </>
 
     );
