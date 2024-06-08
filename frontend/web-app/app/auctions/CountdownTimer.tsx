@@ -18,7 +18,7 @@ export default function CountdownTimer({auctionEnd}: Props) {
         return (
             <div className={
                 cn(
-                    "border-2 border-white text-white py-1 px-2 rounded-lg flex justify-center",
+                    "min-w-24 text-xs border-2 border-white text-white py-1 px-2 rounded-lg flex justify-center",
                     completed ? "bg-red-600" : (days === 0 && hours < 10) ? "bg-amber-600" : "bg-green-600"
                 )
             }>

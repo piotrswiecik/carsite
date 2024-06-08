@@ -18,14 +18,15 @@ export default function AuctionCard({ auction }: Props) {
                         className="object-cover"
                         sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 25vw"  // Responsive image sizes for optimal performance
                     /> 
+                    <div className="absolute bottom-2 left-2">
+                        <CountdownTimer auctionEnd={auction.auctionEnd} />
+                    </div>
                 </div>
-                
             </div>
             <div className="flex justify-between items-center mt-4">
                 <h3 className="text-gray-700">{auction.make} {auction.model}</h3>
                 <p className="font-semibold text-sm">{auction.year}</p>
             </div>
-            <CountdownTimer auctionEnd={auction.auctionEnd} />   
         </a>
     )
 }
