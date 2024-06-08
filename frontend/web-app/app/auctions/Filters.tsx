@@ -27,7 +27,7 @@ export default function Filters() {
                             onClick={() => setParams({orderBy: value})}
                             color={`${orderBy === value ? "red" : "gray"}`}
                         >
-                            <Icon />
+                            <Icon className="mr-3 h-4 w-4" />
                             {label}
                         </Button>
                     ))}
