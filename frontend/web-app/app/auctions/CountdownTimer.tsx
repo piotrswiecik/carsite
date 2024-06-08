@@ -25,7 +25,10 @@ export default function CountdownTimer({auctionEnd}: Props) {
                 {completed ? (
                     <span>Auction finished</span>
                 ) : (
-                    <span>{zeroPad(days)}:{zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}</span>
+                    // this will cause hydration warnings because content changes every second
+                    <span suppressHydrationWarning={true}>
+                        {zeroPad(days)}:{zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
+                    </span>
                 )}
             </div>
         );
