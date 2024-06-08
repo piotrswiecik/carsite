@@ -1,4 +1,3 @@
-import Image from "next/image";
 import CountdownTimer from "@/app/auctions/CountdownTimer";
 import CardImage from "@/app/auctions/CardImage";
 
@@ -8,7 +7,7 @@ type Props = {
 
 export default function AuctionCard({ auction }: Props) {
     return (
-        <a href="#">
+        <a href="#" className="group">
             <div className="w-full bg-gray-200 aspect-w-16 aspect-h-10 rounded-lg overflow-hidden">
                 <div>
                     <CardImage imageUrl={auction.imageUrl} /> 
