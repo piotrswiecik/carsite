@@ -15,7 +15,7 @@ export default function AuctionCard({ auction }: Props) {
                         alt="image"
                         fill
                         priority // Load image as soon as possible - no lazy loading
-                        className="object-cover"
+                        className="object-cover hover:opacity-70"
                         sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 25vw"  // Responsive image sizes for optimal performance
                     /> 
                     <div className="absolute bottom-2 left-2">
