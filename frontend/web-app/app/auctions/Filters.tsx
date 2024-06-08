@@ -18,6 +18,7 @@ export default function Filters({ pageSize, setPageSize }: Props) {
                             key={index}
                             onClick={() => setPageSize(value)}
                             color={`${pageSize === value ? "red" : "gray"}`}  //flowbite syntax
+                            className="focus:ring-0"
                         >{value}</Button>
                     ))}
                 </ButtonGroup>
