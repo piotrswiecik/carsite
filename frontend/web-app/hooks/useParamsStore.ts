@@ -5,23 +5,26 @@ type State = {
     pageNumber: number;
     pageCount: number;
     searchTerm: string;
+    searchInputValue: string;
 };
 
 type Actions = {
-  setParams: (params: Partial<State>) => void;
-  reset: () => void;
+    setParams: (params: Partial<State>) => void;
+    setSearchInputValue: (value: string) => void;
+    reset: () => void;
 };
 
 const initialState: State = {
-  pageNumber: 1,
-  pageSize: 12,
-  pageCount: 1,
-  searchTerm: ""  
+    pageNumber: 1,
+    pageSize: 12,
+    pageCount: 1,
+    searchTerm: "",
+    searchInputValue: ""
 };
 
 export const useParamsStore = create<State & Actions>()((set) => ({
     ...initialState,
-    
+
     // provides implementation for setParams in Actions
     // takes a partial State param and uses "set()" function provided by zustand to update state
     setParams: (newParams) => {
@@ -45,6 +48,10 @@ export const useParamsStore = create<State & Actions>()((set) => ({
             }
         });
     },
+
+    reset: () => set(initialState),
     
-    reset: () => set(initialState)
+    setSearchInputValue(value: string) {
+        set({searchInputValue: value});
+    }
 }));

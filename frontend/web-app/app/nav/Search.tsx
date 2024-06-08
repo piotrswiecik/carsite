@@ -6,15 +6,16 @@ import {useState} from "react";
 import {useParamsStore} from "@/hooks/useParamsStore";
 
 export default function Search() {
-    const [value, setValue] = useState("");
+    const searchInputValue = useParamsStore((state) => state.searchInputValue);
+    const setSearchInputValue  = useParamsStore((state) => state.setSearchInputValue);
     const setParams = useParamsStore((state) => state.setParams);
     
     function onChange(event: any) {
-        setValue(event.target.value);
+        setSearchInputValue(event.target.value);
     }
     
     function search() {
-        setParams({searchTerm: value});
+        setParams({searchTerm: searchInputValue});
     }
     
     return (
@@ -22,6 +23,7 @@ export default function Search() {
             <input 
                 type="text" 
                 placeholder="Search for cars by make, model, color"
+                value={searchInputValue}
                 className={cn(
                     "flex-grow pl-5 bg-transparent focus:outline-none border-transparent focus:border-transparent",
                     "focus:ring-0 text-sm text-gray-600"
