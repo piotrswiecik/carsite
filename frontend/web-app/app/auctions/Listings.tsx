@@ -9,6 +9,7 @@ import Filters from "@/app/auctions/Filters";
 import {useParamsStore} from "@/hooks/useParamsStore";
 import {shallow} from "zustand/shallow";
 import qs from "query-string";
+import EmptyFilter from "@/app/components/EmptyFilter";
 
 
 export default function Listings() {
@@ -44,6 +45,10 @@ export default function Listings() {
     
     if (!data) {
         return <h3>Loading...</h3>
+    }
+    
+    if (data.totalCount === 0) {
+        return <EmptyFilter showReset />
     }
     
     return (
