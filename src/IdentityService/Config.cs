@@ -7,6 +7,8 @@ public static class Config
     public static IEnumerable<IdentityResource> IdentityResources =>
         new IdentityResource[]
         {
+            // adding openid resource sets up the "3 token" flow
+            // id token, access token, refresh token are sent back to client every time
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(), // from custom profile service
         };
@@ -43,7 +45,9 @@ public static class Config
                 AllowOfflineAccess = true,
                 AllowedScopes = { "openid", "profile", "auctionApp" },
                 AccessTokenLifetime = 3600 * 24 * 30, // 30 days
-                AlwaysIncludeUserClaimsInIdToken = true, // we want all user claims inside id token
+                // we want all user claims inside id token
+                // normally you would use access token for that
+                AlwaysIncludeUserClaimsInIdToken = true, 
             }
         };
 }
