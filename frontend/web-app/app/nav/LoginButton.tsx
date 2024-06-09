@@ -6,7 +6,7 @@ import {signIn} from "next-auth/react";
 export default function LoginButton() {
     return (
         // triggers next-auth signin flow
-        <Button outline onClick={() => signIn()}>
+        <Button outline onClick={() => signIn("id-server", { callbackUrl: "/"})}>
             Login
         </Button>
     );
