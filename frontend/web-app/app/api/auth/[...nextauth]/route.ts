@@ -19,7 +19,27 @@ export const authOptions: NextAuthOptions = {
             idToken: true, // if true, user info will be extracted from token instead of userinfo request
             // but server must be configured to provide this
         })
-    ]
+    ],
+    callbacks: {
+        // account, profile and user params are populated only during initial sign-in
+        // on subsequent calls only token is populated
+        async jwt({token, user, profile, account}) {
+            console.log("JWT callback");
+            console.log({token, user, profile, account});
+            if (profile) {
+                token.username = profile.username;
+            }
+            return token;
+        },
+        async session({session, token, user}) {
+            console.log("Session callback");
+            console.log({session, token, user})
+            if (token) {
+                session.user.username = token.username;
+            }
+            return session;
+        }
+    }
 };
 
 const handler = NextAuth(authOptions);
