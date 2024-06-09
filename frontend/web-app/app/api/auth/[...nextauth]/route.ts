@@ -26,8 +26,15 @@ export const authOptions: NextAuthOptions = {
         async jwt({token, user, profile, account}) {
             console.log("JWT callback");
             console.log({token, user, profile, account});
+            
+            // populate next-auth client side token with username from backend api
             if (profile) {
                 token.username = profile.username;
+            }
+            
+            // populate next-auth client side token with access token jwt
+            if (account) {
+                token.access_token = account.access_token;
             }
             return token;
         },
