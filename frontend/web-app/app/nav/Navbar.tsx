@@ -12,7 +12,7 @@ export default async function Navbar() {
             <Logo />
             <div><Search /></div>
             {user ? (
-                <UserActions />
+                <UserActions user={user} />
             ) : (
                 <div><LoginButton /></div>
             )}
