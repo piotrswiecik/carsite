@@ -1,9 +1,4 @@
-import Image from "next/image";
+import page from "@/app/auctions/page";
 
-export default function Home() {
-  return (
-    <div>
-      content goes here
-    </div>
-  );
-}
+export default page;
+
