@@ -20,7 +20,7 @@ export default async function SessionPage() {
             </div>
             <div className="mt-4 bg-green-200 border-2 border-green-500">
                 <h3 className="text-lg">Token data</h3>
-                <pre>{JSON.stringify(token, null, 2)}</pre>
+                <pre className="overflow-auto">{JSON.stringify(token, null, 2)}</pre>
             </div>
         </div>
     );
