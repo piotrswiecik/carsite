@@ -3,6 +3,7 @@
 import {FieldValues, useForm} from "react-hook-form";
 import {Button, TextInput} from "flowbite-react";
 import Input from "@/app/components/Input";
+import {useEffect} from "react";
 
 export default function AuctionForm() {
     const {
@@ -12,6 +13,10 @@ export default function AuctionForm() {
         setFocus,
         formState: {isSubmitting, isValid, isDirty, errors}
     } = useForm({mode: "onTouched"});
+    
+    useEffect(() => {
+        setFocus("make");
+    }, [setFocus])
 
     function onSubmit(data: FieldValues) {
         console.log(data);
@@ -30,7 +35,8 @@ export default function AuctionForm() {
             <Input label="Image URL" name="imageUrl" control={control}
                    rules={{required: "Image URL is required"}}/>
             <div className="grid grid-cols-2 gap-3">
-                <Input label="Reserve price (enter 0 if none)" name="reservePrice" type="number" control={control} rules={{required: "Reserve price is required"}}/>
+                <Input label="Reserve price (enter 0 if none)" name="reservePrice" type="number" control={control}
+                       rules={{required: "Reserve price is required"}}/>
                 <Input label="Auction end date/time" name="auctionEnd" type="date" control={control}
                        rules={{required: "Date is required"}}/>
             </div>
