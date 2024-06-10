@@ -10,7 +10,7 @@ type Props = {
 export default function EditButton({id}: Props) {
     return (
         <Button outline>
-            <Link href={`/auctions/update/${id}`}>Update auction</Link>
+            <Link href={`/auctions/update/${id}`}>Update</Link>
         </Button>
     );
 }

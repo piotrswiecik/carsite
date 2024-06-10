@@ -5,6 +5,7 @@ import CardImage from "@/app/auctions/CardImage";
 import DetailedSpecs from "@/app/auctions/details/[id]/DetailedSpecs";
 import {getCurrentUser} from "@/app/actions/authActions";
 import EditButton from "@/app/auctions/details/[id]/EditButton";
+import DeleteButton from "@/app/auctions/details/[id]/DeleteButton";
 
 export default async function Details({params}: {params: {id: string}}) {
     const data = await getDetailedViewData(params.id);
@@ -16,10 +17,12 @@ export default async function Details({params}: {params: {id: string}}) {
                 <div className="flex items-center gap-3">
                     <Heading title={`${data.make} ${data.model}`} subtitle="" />
                     {user?.username === data.seller && (
-                        <EditButton id={data.id} />
+                        <>
+                            <EditButton id={data.id} />
+                            <DeleteButton id={data.id} /> 
+                        </>
                     )}
                 </div>
-                
                 <div className="flex gap-3 items-center">
                     <h3 className="text-2xl font-semibold">Time remaining: </h3>
                     <CountdownTimer auctionEnd={data.auctionEnd} />
