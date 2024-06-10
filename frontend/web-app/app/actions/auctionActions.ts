@@ -20,3 +20,6 @@ export async function createAuction(data: FieldValues) {
     return await fetchWrapper.post("/auctions", data);
 }
 
+export async function getDetailedViewData(id: string): Promise<Auction> {
+    return await fetchWrapper.get(`/auctions/${id}`);
+}
