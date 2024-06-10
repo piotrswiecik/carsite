@@ -15,7 +15,7 @@ public class BidsController(IMapper mapper) : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Bid>> PlaceBid(string auctionId, int amount)
+    public async Task<ActionResult<BidDto>> PlaceBid(string auctionId, int amount)
     {
         // get auction from mongo
         var auction = await DB.Find<Auction>().OneAsync(auctionId);
@@ -71,7 +71,7 @@ public class BidsController(IMapper mapper) : ControllerBase
 
         await DB.SaveAsync(bid);
 
-        return Ok(bid);
+        return Ok(mapper.Map<BidDto>(bid));
     }
 
     [HttpGet("{auctionId}")]
