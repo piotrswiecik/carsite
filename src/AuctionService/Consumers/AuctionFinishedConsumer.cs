@@ -10,7 +10,8 @@ public class AuctionFinishedConsumer(AuctionDbContext dbContext) : IConsumer<Auc
     public async Task Consume(ConsumeContext<AuctionFinished> context)
     {
         Console.WriteLine("Consuming auction finished");
-        var auction = await dbContext.Auctions.FindAsync(context.Message.AuctionId);
+        var guid = Guid.Parse(context.Message.AuctionId);
+        var auction = await dbContext.Auctions.FindAsync(guid);
 
         if (auction == null)
         {
