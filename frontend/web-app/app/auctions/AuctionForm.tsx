@@ -5,6 +5,8 @@ import {Button, TextInput} from "flowbite-react";
 import Input from "@/app/components/Input";
 import {useEffect} from "react";
 import DateInput from "@/app/components/DateInput";
+import {createAuction} from "@/app/actions/auctionActions";
+import {useRouter} from "next/navigation";
 
 export default function AuctionForm() {
     const {
@@ -14,13 +16,23 @@ export default function AuctionForm() {
         setFocus,
         formState: {isSubmitting, isValid, isDirty, errors}
     } = useForm({mode: "onTouched"});
+    
+    const router = useRouter();
 
     useEffect(() => {
         setFocus("make");
     }, [setFocus])
 
-    function onSubmit(data: FieldValues) {
-        console.log(data);
+    async function onSubmit(data: FieldValues) {
+        try {
+            const res = await createAuction(data);
+            if (res.error) {
+                throw new Error(res.error);
+            }
+            router.push(`/auctions/details/${res.id}`); // TODO: type safety
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
