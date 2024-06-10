@@ -1,4 +1,5 @@
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MongoDB.Driver;
 using MongoDB.Entities;
 
@@ -19,6 +20,15 @@ builder.Services.AddMassTransit(opt =>
         config.ConfigureEndpoints(context);
     });
 });
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        opt.Authority = builder.Configuration["IdentityService:Authority"];
+        opt.RequireHttpsMetadata = false;
+        opt.TokenValidationParameters.ValidateAudience = false;
+        opt.TokenValidationParameters.NameClaimType = "username";
+    });
 
 var app = builder.Build();
 
