@@ -3,6 +3,7 @@
 import {Auction, PagedResult} from "@/types";
 import {fetchWrapper} from "@/lib/fetchWrapper";
 import {FieldValues} from "react-hook-form";
+import {revalidatePath} from "next/cache";
 
 export async function getData(query: string): Promise<PagedResult<Auction>> {
     return await fetchWrapper.get(`/search${query}`);
@@ -24,5 +25,7 @@ export async function getDetailedViewData(id: string): Promise<Auction> {
 }
 
 export async function updateAuction(id: string, data: FieldValues) {
-    return await fetchWrapper.put(`/auctions/${id}`, data);
+    const res = await fetchWrapper.put(`/auctions/${id}`, data);
+    revalidatePath(`/auctions/details/${id}`);
+    return res;
 }
