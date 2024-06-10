@@ -68,7 +68,7 @@ export default function AuctionForm({auction}: Props) {
                        rules={{required: "Mileage is required"}}/>
             </div>
 
-            {pathname === "/auction/create" && (
+            {pathname === "/auctions/create" && (
                 <>
                     <Input label="Image URL" name="imageUrl" control={control}
                            rules={{required: "Image URL is required"}}/>
