@@ -70,7 +70,7 @@ public class BidsController : ControllerBase
         return Ok(bid);
     }
 
-    [HttpGet]
+    [HttpGet("{auctionId}")]
     public async Task<ActionResult<List<Bid>>> GetBidsForAuction(string auctionId)
     {
         var bids = await DB.Find<Bid>()
