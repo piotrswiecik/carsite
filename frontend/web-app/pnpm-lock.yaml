@@ -8,6 +8,9 @@ dependencies:
   classnames:
     specifier: ^2.5.1
     version: 2.5.1
+  date-fns:
+    specifier: ^3.6.0
+    version: 3.6.0
   flowbite:
     specifier: ^2.3.0
     version: 2.3.0
