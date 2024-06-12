@@ -13,5 +13,7 @@ type Actions = {
 export const useBidStore = create<State & Actions>((set) => ({
     bids: [],
     setBids: (bids) => set(() => ({bids})),
-    addBid: (bid) => set((state) => ({bids: [...state.bids, bid]}))
+    addBid: (bid) => set((state) => ({
+        bids: !state.bids.find(x => x.id === bid.id) ? [...state.bids, bid] : [...state.bids] // avoid duplicates
+    }))
 }));
