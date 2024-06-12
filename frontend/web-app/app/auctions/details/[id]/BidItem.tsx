@@ -1,5 +1,6 @@
 import {Bid} from "@/types";
 import cn from "classnames";
+import {format} from "date-fns";
 
 type Props = {
     bid: Bid;
@@ -36,7 +37,7 @@ export default function BidItem({bid}: Props) {
         )}>
             <div className="flex flex-col ">
                 <span>Bidder: {bid.bidder}</span>
-                <span className="text-gray-700 text-sm">Time: {bid.bidTime}</span>
+                <span className="text-gray-700 text-sm">Time: {format(bid.bidTime, "dd MMM yyyy h:mm a")}</span>
             </div>
             <div className="flex flex-col text-right">
                 <div className="text-xl font-semibold">${bid.amount}</div>
