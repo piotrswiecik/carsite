@@ -115,6 +115,21 @@ services:
       - mongo
       - rabbitmq
       - identity-svc
+  
+  nt-svc:
+    image: capricornpl/nt-svc:latest
+    build:
+      context: .
+      dockerfile: src/NotificationService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - RabbitMq__Host=rabbitmq
+    ports:
+      - "8003:80"
+    depends_on:
+      - mongo
+      - rabbitmq
 
 volumes:
   cars-data:

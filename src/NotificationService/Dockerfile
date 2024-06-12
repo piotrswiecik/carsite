@@ -19,10 +19,10 @@ COPY src/NotificationService/NotificationService.csproj src/NotificationService/
 RUN dotnet restore Carsite.sln
 
 # copy app folders
-COPY src/AuctionService src/AuctionService
+COPY src/NotificationService src/NotificationService
 COPY src/Contracts src/Contracts
 
-WORKDIR /app/src/AuctionService
+WORKDIR /app/src/NotificationService
 
 RUN dotnet publish -c Release -o /app/src/out
 
@@ -33,4 +33,4 @@ WORKDIR /app
 
 COPY --from=build /app/src/out .
 
-ENTRYPOINT ["dotnet", "AuctionService.dll"]
+ENTRYPOINT ["dotnet", "NotificationService.dll"]
