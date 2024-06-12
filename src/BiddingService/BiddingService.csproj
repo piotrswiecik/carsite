@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <Protobuf Include="protos\auctions.proto">
-      <GrpcServices>Server</GrpcServices>
+      <GrpcServices>Client</GrpcServices>
       <Access>Public</Access>
       <ProtoCompile>True</ProtoCompile>
       <CompileOutputs>True</CompileOutputs>
