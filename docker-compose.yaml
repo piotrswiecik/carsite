@@ -130,6 +130,22 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+        
+  web-app:
+    image: capricornpl/web-app:latest
+    build:
+      context: .
+      dockerfile: frontend/web-app/Dockerfile
+    volumes:
+      - /var/lib/web/data # nextjs uses this for caching
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXTAUTH_SECRET=your_secret
+      - NEXTAUTH_URL=http://web-app:3000  # careful about this one!
+      - API_URL=http://gateway-svc:6001
+      - ID_URL=http://identity-svc:5000
+      - NEXT_PUBLIC_NOTIFY_URL=http://gateway-svc:6001/notifications
 
 volumes:
   cars-data:
