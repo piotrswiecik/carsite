@@ -21,8 +21,13 @@ export default function BidList({user, auction}: Props) {
     const bids = useBidStore(state => state.bids);
     const setBids = useBidStore(state => state.setBids);
     const [loading, setLoading] = useState(true);
+    
+    // we should check if bid was actually accepted before setting the current amount -> DONE
     const highBid = bids.reduce((prev, current) => (
-        prev > current.amount ? prev : current.amount), 0);
+        prev > current.amount ?
+            prev : 
+            current.bidStatus.includes("Accepted") ? current.amount : prev
+    ), 0);
 
     useEffect(() => {
         getBidsForAuction(auction.id)
