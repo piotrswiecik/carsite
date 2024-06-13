@@ -31,8 +31,7 @@ export default function Search() {
                 placeholder="Search for cars by make, model, color"
                 value={searchInputValue}
                 className={cn(
-                    "flex-grow pl-5 bg-transparent focus:outline-none border-transparent focus:border-transparent",
-                    "focus:ring-0 text-sm text-gray-600"
+                    "input-custom text-sm text-gray-600"
                 )}
                 onChange={onChange}
                 onKeyDown={(e) => e.key === "Enter" && search()}
