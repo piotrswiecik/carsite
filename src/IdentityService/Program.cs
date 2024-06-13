@@ -1,4 +1,5 @@
 ﻿using IdentityService;
+using Polly;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -29,8 +30,10 @@ try
     //     Log.Information("Done seeding database. Exiting.");
     //     return;
     // }
-    SeedData.EnsureSeedData(app);
-
+    var retryPolicy = Policy.Handle<TimeoutException>()
+        .WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(10));
+    retryPolicy.ExecuteAndCapture(() => SeedData.EnsureSeedData(app));
+    
     app.Run();
 }
 catch (Exception ex) when (ex is not HostAbortedException)

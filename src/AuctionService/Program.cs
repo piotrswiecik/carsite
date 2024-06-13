@@ -1,10 +1,11 @@
 using AuctionService.Consumers;
 using AuctionService.Data;
-using AuctionService.RequestHelpers;
 using AuctionService.Services;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,11 @@ builder.Services.AddMassTransit(opt =>
     
     opt.UsingRabbitMq((ctx, cfg) =>
     {
+        cfg.UseMessageRetry(r =>
+        {
+            r.Handle<RabbitMqConnectionException>();
+            r.Interval(5, TimeSpan.FromSeconds(10));
+        });
         cfg.Host(builder.Configuration["RabbitMq:Host"], "/", host =>
         {
             host.Username(builder.Configuration.GetValue("RabbitMq:Username", "guest"));
@@ -61,13 +67,15 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapGrpcService<GrpcAuctionService>();
 
-try
+// polly healthcheck
+var retryPolicy = Policy
+    .Handle<NpgsqlException>()
+    .WaitAndRetry(5, retryAttempt => TimeSpan.FromSeconds(10));
+
+// use instead of try-catch block
+retryPolicy.ExecuteAndCapture(() =>
 {
     DbInitializer.InitDb(app);
-}
-catch (Exception e)
-{
-    Console.WriteLine(e.Message);
-}
+});
 
 app.Run();
