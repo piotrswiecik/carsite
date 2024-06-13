@@ -24,7 +24,7 @@ export default function BidForm({auctionId, highBid}: Props) {
 
     return (
         <form 
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             className="flex items-center border-2 rounded-lg py-2"
         >
             <input 
