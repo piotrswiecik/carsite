@@ -81,7 +81,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=postgres:5432;User Id=postgres;Password=postgres;Database=identity;
     ports:
-      - "5000:80"
+      - "80:80"  # hack!
     depends_on:
       - postgres
   
@@ -140,12 +140,15 @@ services:
       - /var/lib/web/data # nextjs uses this for caching
     ports:
       - "3000:3000"
+    extra_hosts:
+      - id.carsite.com:172.28.0.2  # nasty hack!
     environment:
       - NEXTAUTH_SECRET=your_secret
-      - NEXTAUTH_URL=http://web-app:3000  # careful about this one!
-      - API_URL=http://gateway-svc:6001
-      - ID_URL=http://identity-svc:5000
-      - NEXT_PUBLIC_NOTIFY_URL=http://gateway-svc:6001/notifications
+      - NEXTAUTH_URL=http://localhost:3000  # careful about this one!
+      - NEXTAUTH_URL_INTERNAL=http://web-app:3000
+      - API_URL=http://gateway-svc
+      - ID_URL=http://id.carsite.com  # nasty hack + /etc/hosts
+      - NEXT_PUBLIC_NOTIFY_URL=http://gateway-svc/notifications
 
 volumes:
   cars-data:
