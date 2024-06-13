@@ -21,7 +21,7 @@ export default function BidForm({auctionId, highBid}: Props) {
                 if (bid.error) {
                     throw bid.error;
                 }
-                addBid(bid);
+                addBid(bid); // this is not needed if signalr updated the bid first
                 reset();
             })
             .catch(error => toast.error(error.message));

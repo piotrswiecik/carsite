@@ -34,6 +34,8 @@ export default function SignalRProvider({children}: Props) {
                     if (bid.bidStatus.includes("Accepted")) {
                         setCurrentPrice(bid.auctionId, bid.amount);
                     }
+                    // this requires to check for double bids inside bid store!
+                    addBid(bid);
                 });
             })
                 .catch(error => console.error(error));
