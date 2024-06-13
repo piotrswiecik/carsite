@@ -10,7 +10,7 @@ export const authOptions: NextAuthOptions = {
             id: "id-server", // unique id for this provider inside next-auth
             clientId: "nextApp",
             clientSecret: "secret",
-            issuer: "http://localhost:5000", // this is needed for redirecting to the correct login page
+            issuer: process.env.ID_URL, // this is needed for redirecting to the correct login page
             authorization: {
                 params: {
                     scope: "openid profile auctionApp"  // which scopes to request from the identity server
