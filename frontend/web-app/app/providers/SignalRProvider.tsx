@@ -4,13 +4,17 @@ import React, {useEffect, useState} from "react";
 import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {useAuctionStore} from "@/hooks/useAuctionStore";
 import {useBidStore} from "@/hooks/useBidStore";
-import {Bid} from "@/types";
+import {Auction, Bid} from "@/types";
+import {User} from "next-auth";
+import toast from "react-hot-toast";
+import AuctionCreatedToast from "@/app/components/AuctionCreatedToast";
 
 type Props = {
-  children: React.ReactNode;  
+  children: React.ReactNode;
+  user: User | null;
 };
 
-export default function SignalRProvider({children}: Props) {
+export default function SignalRProvider({children, user}: Props) {
     const [connection, setConnection] = useState<HubConnection | null>(null);
     const setCurrentPrice = useAuctionStore((state) => state.setCurrentPrice);
     const addBid = useBidStore((state) => state.addBid);
@@ -36,6 +40,13 @@ export default function SignalRProvider({children}: Props) {
                     }
                     // this requires to check for double bids inside bid store!
                     addBid(bid);
+                });
+                
+                // listen to "AuctionCreated" SignalR events
+                connection.on("AuctionCreated", (auction: Auction) => {
+                    if (user?.username !== auction.seller) {
+                        return toast(<AuctionCreatedToast auction={auction} />, {duration: 10000});
+                    }
                 });
             })
                 .catch(error => console.error(error));
