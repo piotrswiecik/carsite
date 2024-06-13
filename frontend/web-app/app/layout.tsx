@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/app/nav/Navbar";
 import ToastProvider from "@/app/providers/ToastProvider";
+import SignalRProvider from "@/app/providers/SignalRProvider";
 
 export const metadata: Metadata = {
   title: "CarSite",
@@ -19,7 +20,11 @@ export default function RootLayout({
       <body>
         <ToastProvider />
         <Navbar />
-        <main className="container mx-auto px-5 pt-10">{children}</main>
+        <main className="container mx-auto px-5 pt-10">
+          <SignalRProvider>
+            {children}
+          </SignalRProvider>
+        </main>
       </body>
     </html>
   );
