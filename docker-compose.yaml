@@ -10,6 +10,8 @@ services:
       - "5432:5432"
     volumes:
       - cars-data:/var/lib/postgresql/data
+    networks:
+      custom:
   
   mongo:
     image: mongo:7-jammy
@@ -20,6 +22,8 @@ services:
       - "27017:27017"
     volumes:
       - cars-mongo-data:/var/lib/mongodb/data
+    networks:
+      custom:
   
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -27,6 +31,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      custom:
         
   auction-svc:
     image: capricornpl/auction-svc:latest
@@ -51,6 +57,8 @@ services:
       - postgres
       - rabbitmq
       - identity-svc
+    networks:
+      custom:
   
   search-svc:
     image: capricornpl/search-svc:latest
@@ -70,6 +78,8 @@ services:
       - mongo
       - rabbitmq
       - identity-svc
+    networks:
+      custom:
   
   identity-svc:
     image: capricornpl/identity-svc:latest
@@ -84,6 +94,9 @@ services:
       - "80:80"  # hack!
     depends_on:
       - postgres
+    networks:
+      custom:
+        ipv4_address: 10.5.0.200
   
   gateway-svc:
     image: capricornpl/gateway-svc:latest
@@ -95,6 +108,8 @@ services:
       - ASPNETCORE_URLS=http://+:80
     ports:
       - "6001:80"
+    networks:
+      custom:
         
   bid-svc:
     image: capricornpl/bid-svc:latest
@@ -115,6 +130,8 @@ services:
       - mongo
       - rabbitmq
       - identity-svc
+    networks:
+      custom:
   
   nt-svc:
     image: capricornpl/nt-svc:latest
@@ -130,6 +147,8 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+    networks:
+      custom:
         
   web-app:
     image: capricornpl/web-app:latest
@@ -141,7 +160,7 @@ services:
     ports:
       - "3000:3000"
     extra_hosts:
-      - id.carsite.com:172.28.0.2  # nasty hack!
+      - id.carsite.com:10.5.0.200  # nasty hack!
     environment:
       - NEXTAUTH_SECRET=your_secret
       - NEXTAUTH_URL=http://localhost:3000  # careful about this one!
@@ -149,7 +168,15 @@ services:
       - API_URL=http://gateway-svc
       - ID_URL=http://id.carsite.com  # nasty hack + /etc/hosts
       - NEXT_PUBLIC_NOTIFY_URL=http://gateway-svc/notifications
+    networks:
+      custom:
 
 volumes:
   cars-data:
   cars-mongo-data:
+    
+networks:
+  custom:
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
